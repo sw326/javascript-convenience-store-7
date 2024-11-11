@@ -1,4 +1,5 @@
 import Store from "./models/Store.js";
+import OutputView from "./views/OutputView.js";
 
 class App {
   constructor() {
@@ -7,7 +8,12 @@ class App {
 
   async run() {
     await this.store.initialize();
-    // 여기에 추가 로직이 들어갈 예정입니다.
+    this.displayWelcomeMessage();
+  }
+
+  displayWelcomeMessage() {
+    OutputView.printWelcome();
+    OutputView.printProducts(this.store.getProducts());
   }
 }
 
