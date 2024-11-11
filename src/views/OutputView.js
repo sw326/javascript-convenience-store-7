@@ -2,7 +2,7 @@ import {Console} from "@woowacourse/mission-utils";
 
 class OutputView {
   static printWelcome() {
-    Console.print("🏪 편의점에 오신 것을 환영합니다!");
+    Console.print("🏪 편의점에 오신 것을 환영합니다!", "");
   }
 
   static formatPrice(price) {
@@ -19,27 +19,26 @@ class OutputView {
   }
 
   static printProducts(products) {
-    Console.print("\n=== 상품 목록 ===");
+    Console.print("\n=== 상품 목록 ===", "");
     products.forEach((product) => {
-      Console.print(this.formatProduct(product));
+      Console.print(this.formatProduct(product), "");
     });
-    Console.print("");
+    Console.print("", "");
   }
 
   static printPromotionSuggestion(itemsNeeded, productName) {
     Console.print(
-      `\n${itemsNeeded}개를 추가 구매하시면 프로모션 혜택을 받으실 수 있습니다. 추가 구매하시겠습니까? (Y/N)`
-    );
-  }
-
-  static printRegularPriceConfirmation() {
-    Console.print(
-      "\n일부 수량은 프로모션 적용이 불가능합니다. 정가로 구매하시겠습니까? (Y/N)"
+      `\n${itemsNeeded}개를 추가 구매하시면 프로모션 혜택을 받으실 수 있습니다. 추가 구매하시겠습니까? (Y/N)`,
+      ""
     );
   }
 
   static printMembershipQuestion() {
-    Console.print("\n멤버십 할인을 적용하시겠습니까? (Y/N)");
+    Console.print("\n멤버십 할인을 적용하시겠습니까? (Y/N)", "");
+  }
+
+  static printAdditionalPurchaseQuestion() {
+    Console.print("\n추가 구매하시겠습니까? (Y/N)", "");
   }
 
   static printReceipt(orderSummary) {
@@ -49,27 +48,55 @@ class OutputView {
   }
 
   static printPurchaseDetails(purchases) {
-    Console.print("\n=== 구매 상품 내역 ===");
+    Console.print("\n=== 구매 상품 내역 ===", "");
     purchases.forEach((purchase) => {
       const price = this.formatPrice(
         purchase.product.price * purchase.quantity
       );
       Console.print(
-        `${purchase.product.name} ${purchase.quantity}개 ${price}원`
+        `${purchase.product.name} ${purchase.quantity}개 ${price}원`,
+        ""
       );
     });
   }
 
   static printPromotionItems(purchases) {
-    Console.print("\n=== 증정 상품 내역 ===");
+    Console.print("\n=== 증정 상품 내역 ===", "");
     purchases.forEach((purchase) => {
       if (purchase.promotion) {
         const {freeItems} = this.calculatePromotionItems(purchase);
         if (freeItems > 0) {
-          Console.print(`${purchase.product.name} ${freeItems}개`);
+          Console.print(`${purchase.product.name} ${freeItems}개`, "");
         }
       }
     });
+  }
+
+  static printAmountDetails(orderSummary) {
+    Console.print("\n=== 금액 정보 ===", "");
+    Console.print(
+      `총구매액: ${this.formatPrice(orderSummary.totalAmount)}원`,
+      ""
+    );
+
+    if (orderSummary.promotionDiscount > 0) {
+      Console.print(
+        `행사할인: -${this.formatPrice(orderSummary.promotionDiscount)}원`,
+        ""
+      );
+    }
+
+    if (orderSummary.membershipDiscount > 0) {
+      Console.print(
+        `멤버십할인: -${this.formatPrice(orderSummary.membershipDiscount)}원`,
+        ""
+      );
+    }
+
+    Console.print(
+      `내실돈: ${this.formatPrice(orderSummary.finalAmount)}원`,
+      ""
+    );
   }
 
   static calculatePromotionItems(purchase) {
@@ -77,29 +104,6 @@ class OutputView {
     return {
       freeItems: sets * purchase.promotion.get,
     };
-  }
-
-  static printAmountDetails(orderSummary) {
-    Console.print("\n=== 금액 정보 ===");
-    Console.print(`총구매액: ${this.formatPrice(orderSummary.totalAmount)}원`);
-
-    if (orderSummary.promotionDiscount > 0) {
-      Console.print(
-        `행사할인: -${this.formatPrice(orderSummary.promotionDiscount)}원`
-      );
-    }
-
-    if (orderSummary.membershipDiscount > 0) {
-      Console.print(
-        `멤버십할인: -${this.formatPrice(orderSummary.membershipDiscount)}원`
-      );
-    }
-
-    Console.print(`내실돈: ${this.formatPrice(orderSummary.finalAmount)}원`);
-  }
-
-  static printAdditionalPurchaseQuestion() {
-    Console.print("\n추가 구매하시겠습니까? (Y/N)");
   }
 }
 

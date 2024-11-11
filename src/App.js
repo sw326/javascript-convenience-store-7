@@ -4,18 +4,23 @@ import InputView from "./views/InputView.js";
 import Validator from "./utils/Validator.js";
 import PromotionManager from "./models/PromotionManager.js";
 import MembershipManager from "./models/MembershipManager.js";
+import {Console} from "@woowacourse/mission-utils";
 
 class App {
-  constructor() {
+  constructor(currentDate = new Date(), isTestMode = false) {
     this.store = new Store();
     this.promotionManager = new PromotionManager(this.store);
     this.membershipManager = new MembershipManager();
+    this.currentDate = currentDate;
+    this.isTestMode = isTestMode;
   }
 
   async run() {
     await this.store.initialize();
     this.displayWelcomeMessage();
-    await this.startPurchaseLoop();
+    if (!this.isTestMode) {
+      await this.startPurchaseLoop();
+    }
   }
 
   async startPurchaseLoop() {
@@ -42,8 +47,12 @@ class App {
       this.printReceipt(orderSummary);
       await this.updateInventory(orderSummary.purchases);
     } catch (error) {
-      console.log(error.message);
-      await this.processPurchase();
+      Console.print(error.message, "");
+      if (!this.isTestMode) {
+        await this.processPurchase();
+      } else {
+        throw error;
+      }
     }
   }
 
@@ -100,7 +109,8 @@ class App {
       );
       const promotionResult = this.promotionManager.checkPromotionAvailability(
         product,
-        purchase.quantity
+        purchase.quantity,
+        this.currentDate
       );
 
       if (promotionResult?.type === "ADDITIONAL_ITEMS_NEEDED") {
