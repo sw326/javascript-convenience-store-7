@@ -15,7 +15,13 @@ class App {
   async run() {
     await this.store.initialize();
     this.displayWelcomeMessage();
-    await this.processPurchase();
+    await this.startPurchaseLoop();
+  }
+
+  async startPurchaseLoop() {
+    do {
+      await this.processPurchase();
+    } while (await this.checkAdditionalPurchase());
   }
 
   displayWelcomeMessage() {
@@ -33,8 +39,8 @@ class App {
       const orderSummary = this.calculateOrderSummary(processedPurchases);
 
       await this.processMembership(orderSummary);
-
-      // 여기에 추후 영수증 출력과 재고 관리 로직이 추가될 예정입니다.
+      this.printReceipt(orderSummary);
+      await this.updateInventory(orderSummary.purchases);
     } catch (error) {
       console.log(error.message);
       await this.processPurchase();
@@ -118,6 +124,27 @@ class App {
     }
 
     return processedPurchases;
+  }
+
+  printReceipt(orderSummary) {
+    OutputView.printReceipt(orderSummary);
+  }
+
+  async updateInventory(purchases) {
+    purchases.forEach((purchase) => {
+      const product = this.store.findProduct(purchase.name);
+      product.quantity -= purchase.quantity;
+    });
+  }
+
+  async checkAdditionalPurchase() {
+    OutputView.printAdditionalPurchaseQuestion();
+    const answer = await InputView.readYesOrNo();
+    if (answer === "Y") {
+      OutputView.printProducts(this.store.getProducts());
+      return true;
+    }
+    return false;
   }
 }
 
