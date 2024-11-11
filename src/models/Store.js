@@ -47,6 +47,16 @@ class Store {
   findProduct(name) {
     return this.products.find((product) => product.name === name);
   }
+
+  findPromotion(name) {
+    return this.promotions.find((promotion) => promotion.name === name);
+  }
+
+  getProductPromotion(product, date = new Date()) {
+    if (!product.promotion) return null;
+    const promotion = this.findPromotion(product.promotion);
+    return promotion && promotion.isValidPeriod(date) ? promotion : null;
+  }
 }
 
 export default Store;

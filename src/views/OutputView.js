@@ -25,6 +25,18 @@ class OutputView {
     });
     Console.print("");
   }
+
+  static printPromotionSuggestion(itemsNeeded, productName) {
+    Console.print(
+      `\n${itemsNeeded}개를 추가 구매하시면 프로모션 혜택을 받으실 수 있습니다. 추가 구매하시겠습니까? (Y/N)`
+    );
+  }
+
+  static printRegularPriceConfirmation() {
+    Console.print(
+      "\n일부 수량은 프로모션 적용이 불가능합니다. 정가로 구매하시겠습니까? (Y/N)"
+    );
+  }
 }
 
 export default OutputView;
