@@ -37,6 +37,10 @@ class OutputView {
       "\n일부 수량은 프로모션 적용이 불가능합니다. 정가로 구매하시겠습니까? (Y/N)"
     );
   }
+
+  static printMembershipQuestion() {
+    Console.print("\n멤버십 할인을 적용하시겠습니까? (Y/N)");
+  }
 }
 
 export default OutputView;
