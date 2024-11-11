@@ -30,6 +30,23 @@ class Store {
   getPromotions() {
     return this.promotions;
   }
+
+  validateProduct(name, quantity) {
+    const product = this.findProduct(name);
+    if (!product) {
+      throw new Error("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+    }
+    if (quantity > product.quantity) {
+      throw new Error(
+        "[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요."
+      );
+    }
+    return product;
+  }
+
+  findProduct(name) {
+    return this.products.find((product) => product.name === name);
+  }
 }
 
 export default Store;
